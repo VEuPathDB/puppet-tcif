@@ -1,0 +1,22 @@
+tcif::instances:
+  TemplateDB:
+    ensure: running
+    http_port:  9380
+    ajp13_port: 9309
+    jmx_port:   9305
+    tomcat_user: tomcat_3
+    template_ver: 6.0.35
+    pg_jdbc_path: /usr/share/java/postgresql94-jdbc.jar
+    environment: |
+        CATALINA_OPTS['JMX_OPTS']="\
+          -Dcom.sun.management.jmxremote \
+          -Dcom.sun.management.jmxremote.port=\$JMX_PORT \
+          -Dcom.sun.management.jmxremote.ssl=false \
+          -Dcom.sun.management.jmxremote.authenticate=false"
+tcif::global:
+    instances_dir: /usr/local/tomcat_instances
+    java_home: "%{hiera('ebrc_java::java_home')}"
+    catalina_home: /usr/local/apache-tomcat-6.0.35
+    oracle_home: "%{hiera('oracle_home')}"
+    environment: |
+        CATALINA_OPTS['MEM']="-Xms256m -Xmx1024m -XX:MaxPermSize=512m"
