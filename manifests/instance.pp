@@ -146,11 +146,12 @@ define tcif::instance (
   } # $ensure != 'absent'
 
   service { "tcif-${name}":
-    ensure  => $service_state,
-    start   => "instance_manager start ${name}",
-    stop    => "instance_manager stop ${name} force",
-    restart => "instance_manager restart ${name}",
-    status  => "instance_manager status ${name} | grep -q '${name}'",
+    provider => init,
+    ensure   => $service_state,
+    start    => "instance_manager start ${name}",
+    stop     => "instance_manager stop ${name} force",
+    restart  => "instance_manager restart ${name}",
+    status   => "instance_manager status ${name}",
   }
 
 }
