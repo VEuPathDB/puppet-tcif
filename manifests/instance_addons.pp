@@ -48,6 +48,7 @@ define tcif::instance_addons (
       checksum      => $checksum,
       checksum_type => $checksum_type,
       notify        => Service["tcif-${instance_name}"],
+      require       => Exec["make-${instance_name}"],
     }
 
   }
