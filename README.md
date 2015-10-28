@@ -5,6 +5,9 @@ Install [EupathDB's Tomcat Instance Framework](https://github.com/EuPathDB/tomca
 #### Puppet Modules
 
 - [PuppetLabs stdlib module](https://forge.puppetlabs.com/puppetlabs/stdlib)
+- [Puppet-Community archive module](https://github.com/puppet-community/puppet-archive) 
+The Puppet-Community archive module is not yet in PuppetForge and the other archive
+modules that are in Forge are not compatible with Puppet 4. So use from GitHub.
 
 #### Node dependencies
 
@@ -81,12 +84,28 @@ valid values are
 #### tomcat\_user   
 
 #### template\_ver
-  
-#### orcl\_jdbc\_path
-optional path to Oracle JDBC jar file. If defined, the jar will be installed to `shared/lib` of the instance.
 
-#### pg\_jdbc\_path
-optional path to PostgreSQL JDBC jar file. If defined, the jar will be installed to `shared/lib` of the instance.
+#### addons
+optional. Files to install into the instance. The instance will be restarted upon 
+changes to addons. The value for addons is a hash
+
+    $addons = {
+      Jolokia => {
+        source => 'https://repo1.maven.org/maven2/org/jolokia/jolokia-war/1.3.2/jolokia-war-1.3.2.war'
+        sha256 => '845f3e0de2c2595ef8051941aa00139e618df6f3a921ad8485775678939b572d'
+        dest   => 'webapps/jolokia.war'
+      }
+      JDBC => {
+        source => "file:///u01/app/oracle/product/11.2.0.3/db_1/jdbc/lib/ojdbc6.jar"
+        dest:  => 'shared/lib/ojdbc6.jar'
+      }
+    }
+
+The parameters are:
+
+  - source: Required. The location of the file being installed. This uses the archive module so its syntax requirements apply.
+  - dest: Required. The relative filepath destination, including file name. This path is relative to `${instances_dir}/${instance_name}`.
+  - sha256: Optional. The sha256 checksum of the source file. See documentation for the archive module for details. If not defined, no checksum validation will occur.
 
 #### environment
 optional. Additional entries in the `instance.env` file. Only used with `instance.env.erb` or other template.

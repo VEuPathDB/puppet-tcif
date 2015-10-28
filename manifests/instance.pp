@@ -15,10 +15,13 @@ define tcif::instance (
   $instances_dir     = '/usr/local/tomcat_instances',
   $config_file       = undef,
   $environment       = undef,
+  $addons            = undef,
   $public_logs       = false,
 ) {
 
   include ::tcif
+  # https://github.com/puppet-community/puppet-archive , not yet in PuppetForge
+  include 'archive'
 
   Exec    { require => Class['tcif'] }
   File    { require => Class['tcif'] }
@@ -142,7 +145,18 @@ define tcif::instance (
       } # if ($public_logs == true)
 
     } # if ( $ensure == 'running' )
-    
+
+    if $addons {
+
+      $addon_rekeyed = tcif_rekey_hash($addons, "${name}_")
+
+      $defaults = {
+        instance_name => $name,
+        instances_dir => $instances_dir,
+      }
+      create_resources('tcif::instance_addons', $addon_rekeyed, $defaults)
+    }
+
   } # $ensure != 'absent'
 
   service { "tcif-${name}":

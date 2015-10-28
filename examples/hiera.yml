@@ -6,7 +6,10 @@ tcif::instances:
     jmx_port:   9305
     tomcat_user: tomcat_3
     template_ver: 6.0.35
-    pg_jdbc_path: /usr/share/java/postgresql94-jdbc.jar
+    addons:
+      JDBC:
+        source: "file:///u01/app/oracle/product/11.2.0.3/db_1/jdbc/lib/ojdbc6.jar"
+        dest:   shared/lib/ojdbc6.jar
     environment: |
         CATALINA_OPTS['JMX_OPTS']="\
           -Dcom.sun.management.jmxremote \
