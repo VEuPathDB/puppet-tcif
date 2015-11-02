@@ -1,0 +1,29 @@
+# 'custom.' settings are for third-party use, are not part of the workers configuration.
+
+## inheritable settings ##
+worker.template.type=ajp13
+worker.template.host=localhost
+worker.template.lbfactor=1
+
+# tomcat returns 500 even when handling
+# caught errors with exception.jsp. So
+# failing on 500 status prevents stacktrace
+# on dev sites (but the email in exception.jsp
+# is still generated on live sites)
+#worker.template.fail_on_status=404,500,503
+worker.template.fail_on_status=503
+
+worker.jkstatus.type=status
+
+<%- @instances_data.sort.each do |name,specs| -%>
+worker.list=<%= name %>
+<%- end -%>
+
+<%- @instances_data.sort.each do |name,specs| -%>
+worker.<%= name %>.reference=worker.template
+worker.<%= name %>.port=<%= specs['ajp13_port'] %>
+<%- if specs['http_port'] -%>
+custom.<%= name %>.http_port=<%= specs['http_port'] %>
+<%- end -%>
+
+<%- end -%>
