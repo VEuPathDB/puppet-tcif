@@ -7,14 +7,15 @@
   "source": "https://github.com/mheiges/puppet-tcif",
   "project_page": "https://forge.puppetlabs.com/eupathdb/tcif",
   "issues_url": "https://github.com/mheiges/puppet-tcif/issues",
+  "tags": ["TcIF"],
   "operatingsystem_support": [
     {
     "operatingsystem":"RedHat",
     "operatingsystemrelease":[ "6.0", "7.0" ]
-    },
+    }
    ],
   "dependencies": [
     { "name": "puppetlabs/stdlib", "version_requirement": ">=4.8.0 <5.0.0" },
-    { "name": "puppet-community/puppet-archive", "version_requirement": ">= 0.3.0" }
+    { "name": "puppet/archive", "version_requirement": ">= 0.3.0" }
   ]
 }
