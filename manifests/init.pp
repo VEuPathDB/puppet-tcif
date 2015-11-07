@@ -1,6 +1,7 @@
 # Install Tomcat Instance Framework and manage its service
-
-class tcif {
+class tcif (
+  $tomcat_group = $::tcif::params::tomcat_group,
+) inherits ::tcif::params {
 
   contain tcif::install
   contain tcif::service

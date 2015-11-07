@@ -9,6 +9,7 @@ define tcif::instance (
   $ajp13_port        = undef,
   $jmx_port          = undef,
   $tomcat_user       = undef,
+  $tomcat_group      = $::tcif::tomcat_group,
   $template_ver      = undef,
   $orcl_jdbc_path    = undef,
   $pg_jdbc_path      = undef,
@@ -88,7 +89,7 @@ define tcif::instance (
       file { "${name}-env":
         path    => "${instances_dir}/${name}/conf/instance.env",
         owner   => $tomcat_user,
-        group   => 'tomcat',
+        group   => $tomcat_group,
         mode    => '0644',
         content => template('tcif/instance.env.erb'),
         require => [Exec["make-${instance_name}"]],
@@ -107,12 +108,16 @@ define tcif::instance (
       if ($public_logs == true) {
         file { "${instances_dir}/_${name}/logs":
           mode    => '0644',
+          owner   => $tomcat_user,
+          group   => $tomcat_group,
           recurse => true,
           require => Exec["make-${instance_name}"]
         }
       } else {
         file { "${instances_dir}/_${name}/logs":
           mode    => '0640',
+          owner   => $tomcat_user,
+          group   => $tomcat_group,
           recurse => true,
           require => Exec["make-${instance_name}"]
         }
@@ -133,12 +138,16 @@ define tcif::instance (
       if ($public_logs == true) {
         file { "${instances_dir}/${name}/logs":
           mode    => '0644',
+          owner   => $tomcat_user,
+          group   => $tomcat_group,
           recurse => true,
           require => Exec["make-${instance_name}"]
         }
       } else {
         file { "${instances_dir}/${name}/logs":
           mode    => '0640',
+          owner   => $tomcat_user,
+          group   => $tomcat_group,
           recurse => true,
           require => Exec["make-${instance_name}"]
         }
