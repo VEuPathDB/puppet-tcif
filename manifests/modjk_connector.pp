@@ -2,13 +2,11 @@ class tcif::modjk_connector {
 
   $instances_data = hiera_hash('tcif::instances')
 
-  package { 'mod_jk':
-    ensure => present,
-  }
+  contain '::apache_ext::mod::jk'
 
   file { '/etc/httpd/conf/workers.properties':
     content => template('tcif/workers.properties.erb'),
-    require => Package['mod_jk'],
+    require => Class['::apache_ext::mod::jk'],
   }
 
 }
