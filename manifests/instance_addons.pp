@@ -5,7 +5,6 @@
 #                    is located.
 #   $source: Required. The location of the file being installed. This uses
 #            the archive module so its syntax requirements apply. See
-#            https://github.com/puppet-community/puppet-archive
 #   $dest: Required. The relative filepath destination, including file name.
 #          This path is relative to the ${instances_dir}/${instance_name}.
 #   $sha256: Optional. The sha256 checksum of the source file. See documentation
@@ -19,6 +18,7 @@
 #
 define tcif::instance_addons (
   $ensure = 'present',
+  $addon = undef,
   $instance_name = undef,
   $instances_dir = undef,
   $source = undef,
@@ -41,12 +41,20 @@ define tcif::instance_addons (
       $checksum_type = undef
     }
 
-    archive { "${instances_dir}/${instance_name}/${dest}":
+    if $checksum {
+      $docheck = true
+    } else {
+      $docheck = false
+    }
+      
+    archive::download { $addon:
       ensure        => present,
-      extract       => false,
-      source        => $source,
-      checksum      => $checksum,
-      checksum_type => $checksum_type,
+      url           => $source,
+      src_target    => "${instances_dir}/${instance_name}/${dest}",
+      checksum      => $docheck,
+      digest_string => $checksum,
+      digest_type   => $checksum_type,
+      verbose       => false,
       notify        => Service["tcif-${instance_name}"],
       require       => Exec["make-${instance_name}"],
     }

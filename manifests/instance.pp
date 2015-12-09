@@ -21,8 +21,6 @@ define tcif::instance (
 ) {
 
   include ::tcif
-  # https://github.com/puppet-community/puppet-archive , not yet in PuppetForge
-  include 'archive'
 
   Exec    { require => Class['tcif'] }
   File    { require => Class['tcif'] }
@@ -169,8 +167,8 @@ define tcif::instance (
   } # $ensure != 'absent'
 
   service { "tcif-${name}":
-    provider => init,
     ensure   => $service_state,
+    provider => init,
     start    => "instance_manager start ${name}",
     stop     => "instance_manager stop ${name} force",
     restart  => "instance_manager restart ${name}",

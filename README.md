@@ -5,9 +5,10 @@ Install [EupathDB's Tomcat Instance Framework](https://github.com/EuPathDB/tomca
 #### Puppet Modules
 
 - [PuppetLabs stdlib module](https://forge.puppetlabs.com/puppetlabs/stdlib)
-- [Puppet-Community archive module](https://github.com/puppet-community/puppet-archive) 
-The Puppet-Community archive module is not yet in PuppetForge and the other archive
-modules that are in Forge are not compatible with Puppet 4. So use from GitHub.
+- [camptocamp archive module](https://github.com/camptocamp/puppet-archive) 
+This is for compatibility with the `jenkins` module. We can use
+`puppet/archive` once
+https://github.com/jenkinsci/puppet-jenkins/pull/433 is merged.
 
 #### Node dependencies
 
