@@ -1,10 +1,12 @@
 module Puppet::Parser::Functions
   newfunction(:tcif_picker, :type => :rvalue, :doc => <<-EOS) do |args|
-    Prefixes each hash key with the given string.
-    For example, to prefix each key with the resource name, use
-      tcif_picker($hash, $name)
-    This is useful to avoid 'duplicate declaration' errors when
-    passing a sub-hash to a create_resource().
+    Pick a subset of TcIF data by hash key values.
+    For example, to select FooDB and BarDB from tcif::instances 
+    hiera data, do
+
+      $instances_data = hiera('tcif::instances')
+      tcif_picker(['FooDB', 'BarDB'], $instances_data)
+
     EOS
 
     if args.length < 2
