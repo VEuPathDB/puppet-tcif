@@ -22,4 +22,4 @@ tcif::global:
     catalina_home: /usr/local/apache-tomcat-6.0.35
     oracle_home: "%{hiera('oracle_home')}"
     environment: |
-        CATALINA_OPTS['MEM']="-Xms256m -Xmx1024m -XX:MaxPermSize=512m"
+        CATALINA_OPTS['MEM']="-Xms256m -Xmx1024m"

@@ -33,7 +33,7 @@ The configuration file `shared/conf/global.env` which profides default configura
       java_home     => '/usr/java/jdk1.7.0_25',
       instances_dir => '/usr/local/tomcat_instances,
       oracle_home   => '/u01/app/oracle/product/11.2.0.3/db_1',
-      environment   => 'CATALINA_OPTS["MEM"]="-Xms256m -Xmx1024m -XX:MaxPermSize=512m"',
+      environment   => 'CATALINA_OPTS["MEM"]="-Xms256m -Xmx1024m"',
     }
 
 #### catalina_home
