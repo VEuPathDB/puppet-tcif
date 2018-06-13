@@ -4,9 +4,9 @@
   "author": "eupathdb",
   "license": "Apache-2.0",
   "summary": "A module to manage the EuPathDB Tomcat Instance Framework",
-  "source": "https://github.com/mheiges/puppet-tcif",
+  "source": "https://github.com/EuPathDB/puppet-tcif",
   "project_page": "https://forge.puppetlabs.com/eupathdb/tcif",
-  "issues_url": "https://github.com/mheiges/puppet-tcif/issues",
+  "issues_url": "https://github.com/EuPathDB/puppet-tcif/issues",
   "dependencies": [
     {"name":"puppetlabs/stdlib","version_requirement":">=4.8.0 <5.0.0"},
     {"name":"camptocamp/archive","version_requirement":">= 0.8.1"}
