@@ -4,7 +4,7 @@ module Puppet::Parser::Functions
     For example, to select FooDB and BarDB from tcif::instances 
     hiera data, do
 
-      $instances_data = hiera('tcif::instances')
+      $instances_data = lookup('tcif::instances', Hash)
       tcif_picker(['FooDB', 'BarDB'], $instances_data)
 
     EOS
