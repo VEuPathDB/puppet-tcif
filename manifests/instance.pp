@@ -8,6 +8,7 @@ define tcif::instance (
   $http_port         = undef,
   $ajp13_port        = undef,
   $jmx_port          = undef,
+  $jprofiler_port    = undef,
   $tomcat_user       = undef,
   $tomcat_group      = $::tcif::tomcat_group,
   $template_ver      = undef,
@@ -21,6 +22,7 @@ define tcif::instance (
 ) {
 
   include ::tcif
+  include 'archive'
 
   Exec    { require => Class['tcif'] }
   File    { require => Class['tcif'] }
@@ -103,21 +105,30 @@ define tcif::instance (
         require => [Exec["make-${instance_name}"], Service["tcif-${name}"]],
       }
 
+      file { "${name}-env":
+        path    => "${instances_dir}/_${name}/conf/instance.env",
+        owner   => $tomcat_user,
+        group   => $tomcat_group,
+        mode    => '0644',
+        content => template('tcif/instance.env.erb'),
+        require => Exec["disable-${name}"],
+      }
+
       if ($public_logs == true) {
         file { "${instances_dir}/_${name}/logs":
           mode    => '0644',
           owner   => $tomcat_user,
           group   => $tomcat_group,
-          recurse => true,
-          require => Exec["make-${instance_name}"]
+          recurse => false,
+          require => Exec["disable-${name}"],
         }
       } else {
         file { "${instances_dir}/_${name}/logs":
           mode    => '0640',
           owner   => $tomcat_user,
           group   => $tomcat_group,
-          recurse => true,
-          require => Exec["make-${instance_name}"]
+          recurse => false,
+          require => Exec["disable-${name}"],
         }
       } # if ($public_logs == true)
 
@@ -138,7 +149,7 @@ define tcif::instance (
           mode    => '0644',
           owner   => $tomcat_user,
           group   => $tomcat_group,
-          recurse => true,
+          recurse => false,
           require => Exec["make-${instance_name}"]
         }
       } else {
@@ -146,7 +157,7 @@ define tcif::instance (
           mode    => '0640',
           owner   => $tomcat_user,
           group   => $tomcat_group,
-          recurse => true,
+          recurse => false,
           require => Exec["make-${instance_name}"]
         }
       } # if ($public_logs == true)
@@ -158,8 +169,9 @@ define tcif::instance (
       $addon_rekeyed = tcif_rekey_hash($addons, "${name}_")
 
       $defaults = {
-        instance_name => $name,
-        instances_dir => $instances_dir,
+        instance_name   => $name,
+        instances_dir   => $instances_dir,
+        instance_ensure => $ensure
       }
       create_resources('tcif::instance_addons', $addon_rekeyed, $defaults)
     }
@@ -168,7 +180,6 @@ define tcif::instance (
 
   service { "tcif-${name}":
     ensure   => $service_state,
-    provider => init,
     start    => "instance_manager start ${name}",
     stop     => "instance_manager stop ${name} force",
     restart  => "instance_manager restart ${name}",

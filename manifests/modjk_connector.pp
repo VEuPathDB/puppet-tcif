@@ -1,6 +1,6 @@
 class tcif::modjk_connector {
 
-  $instances_data = hiera_hash('tcif::instances')
+  $instances_data = lookup('tcif::instances', Hash)
 
   contain '::apache_ext::mod::jk'
 

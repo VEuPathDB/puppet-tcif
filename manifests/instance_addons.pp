@@ -5,6 +5,7 @@
 #                    is located.
 #   $source: Required. The location of the file being installed. This uses
 #            the archive module so its syntax requirements apply. See
+#            https://github.com/puppet-community/puppet-archive
 #   $dest: Required. The relative filepath destination, including file name.
 #          This path is relative to the ${instances_dir}/${instance_name}.
 #   $sha256: Optional. The sha256 checksum of the source file. See documentation
@@ -18,12 +19,12 @@
 #
 define tcif::instance_addons (
   $ensure = 'present',
-  $addon = undef,
-  $instance_name = undef,
-  $instances_dir = undef,
-  $source = undef,
-  $dest = undef,
-  $sha256 = undef,
+  $instance_name   = undef,
+  $instances_dir   = undef,
+  $instance_ensure = undef,
+  $source          = undef,
+  $dest            = undef,
+  $sha256          = undef,
 ) {
 
   if $ensure == 'absent' {
@@ -41,22 +42,25 @@ define tcif::instance_addons (
       $checksum_type = undef
     }
 
-    if $checksum {
-      $docheck = true
+    if $instance_ensure == 'stopped' {
+      archive { "${instances_dir}/_${instance_name}/${dest}":
+        ensure        => present,
+        extract       => false,
+        source        => $source,
+        checksum      => $checksum,
+        checksum_type => $checksum_type,
+        require       => Exec["make-${instance_name}"],
+     }
     } else {
-      $docheck = false
-    }
-      
-    archive::download { $addon:
-      ensure        => present,
-      url           => $source,
-      src_target    => "${instances_dir}/${instance_name}/${dest}",
-      checksum      => $docheck,
-      digest_string => $checksum,
-      digest_type   => $checksum_type,
-      verbose       => false,
-      notify        => Service["tcif-${instance_name}"],
-      require       => Exec["make-${instance_name}"],
+      archive { "${instances_dir}/${instance_name}/${dest}":
+        ensure        => present,
+        extract       => false,
+        source        => $source,
+        checksum      => $checksum,
+        checksum_type => $checksum_type,
+        notify        => Service["tcif-${instance_name}"],
+        require       => Exec["make-${instance_name}"],
+      }
     }
 
   }
