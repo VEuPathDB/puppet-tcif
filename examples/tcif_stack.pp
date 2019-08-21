@@ -3,7 +3,7 @@ class profiles::tcif_stack {
   include ::profiles::ebrc_java_stack
   include ::profiles::ebrc_tomcat
 
-  $global = hiera('tcif::global')
+  $global = lookup('tcif::global', Hash)
 
   tcif::global_config{ 'tcif':
     catalina_home => $global['catalina_home'],
