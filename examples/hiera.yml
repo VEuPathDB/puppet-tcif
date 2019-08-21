@@ -18,8 +18,8 @@ tcif::instances:
           -Dcom.sun.management.jmxremote.authenticate=false"
 tcif::global:
     instances_dir: /usr/local/tomcat_instances
-    java_home: "%{hiera('ebrc_java::java_home')}"
+    java_home: "%{lookup('ebrc_java::java_home')}"
     catalina_home: /usr/local/apache-tomcat-6.0.35
-    oracle_home: "%{hiera('oracle_home')}"
+    oracle_home: "%{lookup('oracle_home')}"
     environment: |
         CATALINA_OPTS['MEM']="-Xms256m -Xmx1024m"
