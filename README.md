@@ -5,10 +5,7 @@ Install [EupathDB's Tomcat Instance Framework](https://github.com/EuPathDB/tomca
 #### Puppet Modules
 
 - [PuppetLabs stdlib module](https://forge.puppetlabs.com/puppetlabs/stdlib)
-- [camptocamp archive module](https://github.com/camptocamp/puppet-archive) 
-This is for compatibility with the `jenkins` module. We can use
-`puppet/archive` once
-https://github.com/jenkinsci/puppet-jenkins/pull/433 is merged.
+- [Puppet-Community archive module](https://forge.puppetlabs.com/puppet/archive)
 
 #### Node dependencies
 
@@ -86,6 +83,12 @@ valid values are
 
 #### template\_ver
 
+A template version matching a directory name in
+`/usr/local/tomcat_instances/templates`. This template is used to `make`
+the instance and includes configurations specific to a given version of
+Tomcat. Changing the `template_ver` after the instance has been made
+will have no affect.
+
 #### addons
 optional. Files to install into the instance. The instance will be restarted upon 
 changes to addons. The value for addons is a hash
@@ -109,10 +112,30 @@ The parameters are:
   - sha256: Optional. The sha256 checksum of the source file. See documentation for the archive module for details. If not defined, no checksum validation will occur.
 
 #### environment
-optional. Additional entries in the `instance.env` file. Only used with `instance.env.erb` or other template.
+optional. Additional entries in the `instance.env` file (provided the
+`instance.env` file originates from the `instance.env.erb` template).
+
+    PlasmoDB:
+      ensure:       stopped
+      http_port:    9480
+      ajp13_port:   9409
+      jmx_port:     9405
+      tomcat_user:  tomcat_4
+      template_ver: 6.0.35
+      environment: |
+        CATALINA_OPTS['MEM']="   \
+            -Xms1024m -Xmx2048m \
+            -XX:MaxPermSize=1024m"
+        %{lookup('tcif::instances::default_environment')}
+
+The `environment` will override `tcif::instances::default_environment`,
+so be sure to include the `tcif::instances::default_environment` value
+from hiera, as shown in the example, if you want to keep the defaults.
 
 #### config\_file
 The origin of the `instance.env` file.
 
 #### public\_logs
 `true` or `false` whether the tomcat instance logs are world readable. Default `false`.
+
+
