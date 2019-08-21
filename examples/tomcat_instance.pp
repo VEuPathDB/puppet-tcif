@@ -4,7 +4,7 @@ define profiles::tomcat_instance() {
 
   include tcif
 
-  $instances_data = hiera('tcif::instances')
+  $instances_data = lookup('tcif::instances', Hash)
 
   $ensure         = $instances_data[$name]['ensure']
   $http_port      = $instances_data[$name]['http_port']
