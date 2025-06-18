@@ -1,6 +1,6 @@
 class profiles::tcif_stack {
 
-  include ::profiles::ebrc_java_stack
+  include ::ebrc_java
   include ::profiles::ebrc_tomcat
 
   $global = lookup('tcif::global', Hash)
