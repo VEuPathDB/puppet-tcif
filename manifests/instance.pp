@@ -3,22 +3,22 @@
 #
 
 define tcif::instance (
-  $ensure            = running,
-  $instance_name     = $name,
-  $http_port         = undef,
-  $ajp13_port        = undef,
-  $jmx_port          = undef,
-  $jprofiler_port    = undef,
-  $tomcat_user       = undef,
-  $tomcat_group      = $::tcif::tomcat_group,
-  $template_ver      = undef,
-  $orcl_jdbc_path    = undef,
-  $pg_jdbc_path      = undef,
-  $instances_dir     = '/usr/local/tomcat_instances',
-  $config_file       = undef,
-  $environment       = undef,
-  $addons            = undef,
-  $public_logs       = false,
+  $ensure                                        = running,
+  $instance_name                                 = $name,
+  Integer $http_port,
+  Integer $ajp13_port,
+  Optional[Integer] $jmx_port                    = undef,
+  Optional[Integer] $jprofiler_port              = undef,
+  String $tomcat_user,
+  $tomcat_group                                  = $::tcif::tomcat_group,
+  String $template_ver,
+  Optional[Stdlib::AbsolutePath] $orcl_jdbc_path = undef,
+  Optional[Stdlib::AbsolutePath] $pg_jdbc_path   = undef,
+  Stdlib::AbsolutePath $instances_dir            = '/usr/local/tomcat_instances',
+  $config_file                                   = undef,
+  $environment                                   = undef,
+  $addons                                        = undef,
+  Boolean $public_logs                           = false,
 ) {
 
   include ::tcif
@@ -27,8 +27,6 @@ define tcif::instance (
   Exec    { require => Class['tcif'] }
   File    { require => Class['tcif'] }
   Service { require => Class['tcif'] }
-
-  validate_bool($public_logs)
 
   $service_state = $ensure ? {
     'absent' => 'stopped',
@@ -51,23 +49,6 @@ define tcif::instance (
   } else {
 
     if $instance_name == undef { fail("'instance_name' is not defined") }
-    if $http_port == undef { fail("'http_port' is not defined") }
-    if $ajp13_port == undef { fail("'ajp13_port' is not defined") }
-    #if $jmx_port == undef { fail("'jmx_port' is not defined") }
-    if $tomcat_user == undef { fail("'tomcat_user' is not defined") }
-    if $template_ver == undef { fail("'template_ver' is not defined") }
-
-    if $orcl_jdbc_path {
-      validate_absolute_path($orcl_jdbc_path)
-    }
-
-    if $pg_jdbc_path {
-      validate_absolute_path($pg_jdbc_path)
-    }
-
-    if $instances_dir {
-      validate_absolute_path($instances_dir)
-    }
 
     $make_cmd = "make install                     \
       INSTANCE=${instance_name}                   \
