@@ -165,6 +165,7 @@ define tcif::instance (
     stop     => "instance_manager stop ${name} force",
     restart  => "instance_manager restart ${name}",
     status   => "instance_manager status ${name}",
+    provider => "base",
   }
 
 }
