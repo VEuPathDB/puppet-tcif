@@ -7,6 +7,8 @@ define tcif::instance (
   $instance_name                                 = $name,
   Integer $http_port,
   Integer $ajp13_port,
+  String  $ajp13_secret,
+  String  $ajp13_allowedRequestAttributesPattern,
   Optional[Integer] $jmx_port                    = undef,
   Optional[Integer] $jprofiler_port              = undef,
   String $tomcat_user,

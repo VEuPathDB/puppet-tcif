@@ -7,6 +7,7 @@
 worker.template.type=ajp13
 worker.template.host=localhost
 worker.template.lbfactor=1
+worker.template.secret=<%= @ajp13_secret %>
 
 # tomcat returns 500 even when handling
 # caught errors with exception.jsp. So

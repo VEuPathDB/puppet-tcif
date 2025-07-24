@@ -1,6 +1,7 @@
 class tcif::modjk_connector {
 
   $instances_data = lookup('tcif::instances', Hash)
+  $ajp13_secret = lookup('tcif::instances::ajp13_secret')
 
   contain '::apache_ext::mod::jk'
 
