@@ -56,6 +56,8 @@ define tcif::instance (
       INSTANCE=${instance_name}                   \
       HTTP_PORT=${http_port}                      \
       AJP13_PORT=${ajp13_port}                    \
+      AJP13_SECRET=${ajp13_secret}                \
+      AJP13_ALLOWEDREQUESTATTRIBUTESPATTERN=${ajp13_allowedRequestAttributesPattern} \
       JMX_PORT=${jmx_port}                        \
       TOMCAT_USER=${tomcat_user}                  \
       TEMPLATE=${template_ver}
