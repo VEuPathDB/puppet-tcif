@@ -70,11 +70,16 @@ define tcif::instance (
       creates => "${instances_dir}/${instance_name}",
     }
 
+    selinux::exec_restorecon{"${instances_dir}/${instance_name}/logs":
+      refreshonly => true,
+    }
+
     # Set correct context for the logs directory otherwise logrotate can't access the logs.
     selinux::fcontext{ "set ${instances_dir}/${instance_name}/logs(/.*)? context":
       seltype  => 'tomcat_log_t',
       pathspec => "${instances_dir}/${instance_name}/logs(/.*)?",
-      require => [Exec["make-${instance_name}"]],
+      require  => [Exec["make-${instance_name}"]],
+      notify   => Selinux::Exec_restorecon["${instances_dir}/${instance_name}/logs"],
     }
 
     if ( $ensure == 'running' ) {
