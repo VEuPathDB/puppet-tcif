@@ -18,13 +18,16 @@
 # instead of the archive module.
 #
 define tcif::instance_addons (
-  $ensure = 'present',
+  $ensure          = 'present',
   $instance_name   = undef,
   $instances_dir   = undef,
   $instance_ensure = undef,
   $source          = undef,
   $dest            = undef,
   $sha256          = undef,
+  $owner,
+  $group,
+  $mode,
 ) {
 
   if $ensure == 'absent' {
@@ -42,25 +45,29 @@ define tcif::instance_addons (
       $checksum_type = undef
     }
 
-    if $instance_ensure == 'stopped' {
-      archive { "${instances_dir}/_${instance_name}/${dest}":
-        ensure        => present,
-        extract       => false,
-        source        => $source,
-        checksum      => $checksum,
-        checksum_type => $checksum_type,
-        require       => Exec["make-${instance_name}"],
-     }
-    } else {
-      archive { "${instances_dir}/${instance_name}/${dest}":
-        ensure        => present,
-        extract       => false,
-        source        => $source,
-        checksum      => $checksum,
-        checksum_type => $checksum_type,
-        notify        => Service["tcif-${instance_name}"],
-        require       => Exec["make-${instance_name}"],
-      }
+    $path = $instance_ensure ? {
+      'stopped' => "${instances_dir}/_${instance_name}/${dest}",
+      default => "${instances_dir}/${instance_name}/${dest}"
+    }
+    $serviceNotify = $instance_ensure ? {
+      'stopped' => [],
+      default => [Service["tcif-${instance_name}"]]
+    }
+
+    exec { "set addon $path perms":
+      command   => "chown $owner:$group $path; chmod $mode $path",
+      refreshonly => true,
+      subscribe => Archive[$path]
+    }
+
+    archive { $path:
+      ensure        => present,
+      extract       => false,
+      source        => $source,
+      checksum      => $checksum,
+      checksum_type => $checksum_type,
+      require       => Exec["make-${instance_name}"],
+      notify        => $serviceNotify,
     }
 
   }

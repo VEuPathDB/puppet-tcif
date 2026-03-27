@@ -168,7 +168,10 @@ define tcif::instance (
       $defaults = {
         instance_name   => $name,
         instances_dir   => $instances_dir,
-        instance_ensure => $ensure
+        instance_ensure => $ensure,
+        owner           => $tomcat_user,
+        group           => $tomcat_group,
+        mode            => '0640'
       }
       create_resources('tcif::instance_addons', $addon_rekeyed, $defaults)
     }
